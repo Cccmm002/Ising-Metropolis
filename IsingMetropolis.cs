@@ -64,13 +64,15 @@ namespace IsingMetropolis
             for (int i = 0; i < modelWidth; i++)
                 for (int j = 0; j < modelHeight; j++)
                 {
-                    if (random.Next(100) < 50)
-                        currentState[i, j] = -1;
-                    else
+                    if (random.Next(1000) < (int)(numUpPos.Value*10))
                         currentState[i, j] = 1;
+                    else
+                        currentState[i, j] = -1;
                 }
 
             picDraw.Image = Drawing(currentState, modelWidth, modelHeight);
+            int mille = BlackMille(currentState, modelWidth, modelHeight);
+            ShowPercentage(mille);
 
             cmdStart.Enabled = true;
         }
@@ -83,6 +85,27 @@ namespace IsingMetropolis
             cmdStart.Enabled = false;
             numInterval.Enabled = false;
             cmdInit.Enabled = false;
+        }
+
+        int BlackMille(int[,] state, int width, int height)
+        {
+            int sum = 0;
+            for (int i = 0; i < width; i++)
+                for (int j = 0; j < height; j++)
+                    if (state[i, j] == 1)
+                        sum++;
+            return (int)(((float)sum / (width * height)) * 1000);
+        }
+
+        void ShowPercentage(int mille)
+        {
+            lblPercentage.Text = ((float)mille / 10).ToString() + "%";
+            Bitmap bar = new Bitmap(picBar.Width, picBar.Height);
+            Graphics g = Graphics.FromImage(bar);
+            int boundary=(int)(((float)mille / 1000) * picBar.Width);
+            g.FillRectangle(Brushes.Black, new Rectangle(0, 0, boundary, picBar.Height));
+            g.FillRectangle(Brushes.White, new Rectangle(boundary, 0, picBar.Width - boundary, picBar.Height));
+            picBar.Image = bar;
         }
 
         Bitmap Drawing(int[,] state, int width, int height)
@@ -118,6 +141,8 @@ namespace IsingMetropolis
             for (int i = 0; i < CalcPerSec; i++)
                 currentState = Metropolis(currentState, modelWidth, modelHeight, (double)numJ.Value, (1 / ((double)numT.Value)), (double)numM.Value, random);
             picDraw.Image = Drawing(currentState, modelWidth, modelHeight);
+            int mille = BlackMille(currentState, modelWidth, modelHeight);
+            ShowPercentage(mille);
         }
 
         private void cmdStop_Click(object sender, EventArgs e)
