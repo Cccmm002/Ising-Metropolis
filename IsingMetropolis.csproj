@@ -48,6 +48,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Swendsen-Wang.cs" />
+    <Compile Include="Wolff.cs" />
     <EmbeddedResource Include="IsingMetropolis.resx">
       <DependentUpon>IsingMetropolis.cs</DependentUpon>
     </EmbeddedResource>

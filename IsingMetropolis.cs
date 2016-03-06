@@ -139,7 +139,20 @@ namespace IsingMetropolis
         void StepOn(Object sender, EventArgs e)
         {
             for (int i = 0; i < CalcPerSec; i++)
-                currentState = Metropolis(currentState, modelWidth, modelHeight, (double)numJ.Value, (1 / ((double)numT.Value)), (double)numM.Value, random);
+            {
+                switch (comboAlgorithm.SelectedIndex)
+                {
+                    case 0:
+                        currentState = Metropolis(currentState, modelWidth, modelHeight, (double)numJ.Value, (1 / ((double)numT.Value)), (double)numM.Value, random);
+                        break;
+                    case 1:
+                        currentState = Wolff.Update(currentState, modelWidth, modelHeight, (double)numJ.Value, (1 / ((double)numT.Value)), random);
+                        break;
+                    case 2:
+                        currentState = Swendsen_Wang.Update(currentState, modelWidth, modelHeight, (double)numJ.Value, (1 / ((double)numT.Value)), random);
+                        break;
+                }
+            }
             picDraw.Image = Drawing(currentState, modelWidth, modelHeight);
             int mille = BlackMille(currentState, modelWidth, modelHeight);
             ShowPercentage(mille);
@@ -170,6 +183,8 @@ namespace IsingMetropolis
             CalcPerSec = ((int)numInterval.Value) / 100;
             timer.Enabled = false;
             timer.Tick += new EventHandler(StepOn);
+
+            comboAlgorithm.SelectedIndex = 0;
         }
     }
 }
